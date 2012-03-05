@@ -95,8 +95,8 @@ bool CodeEditor::saveAsFile()
 		QString(), tr("RapCAD Files (*.rcad);;All Files (*)"));
 	if(fn.isEmpty())
 		return false;
-	if(!fn.contains(".rcad"))
-		fn.append(".rcad");
+	if(!fn.endsWith(".rcad", Qt::CaseInsensitive))
+    	    fn.append(".rcad");
 	setFileName(fn);
 	return saveFile();
 }

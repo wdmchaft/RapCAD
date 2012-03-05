@@ -17,6 +17,7 @@
  */
 
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMimeData>
 #include <QClipboard>
 #include "mainwindow.h"
@@ -204,6 +205,8 @@ void MainWindow::grabFrameBuffer()
 	QImage image = ui->view->grabFrameBuffer();
 	QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
 					QString(), tr("PNG Files (*.png)"));
+		if(!fn.endsWith(".png", Qt::CaseInsensitive))
+			fn.append(".png");
 	image.save(fn);
 }
 
@@ -212,6 +215,8 @@ void MainWindow::exportAsciiSTL()
 	if(primitive) {
 		QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
 					QString(), tr("STL Files (*.stl);;All Files (*)"));
+			if(!fn.endsWith(".stl", Qt::CaseInsensitive))
+				fn.append(".stl");
 		worker->exportAsciiSTL(primitive,fn);
 	}
 }
@@ -220,7 +225,9 @@ void MainWindow::exportOFF()
 {
 	if(primitive) {
 		QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
-					QString(), tr("OFF Files (*.stl);;All Files (*)"));
+					QString(), tr("OFF Files (*.off);;All Files (*)")); //I am pretty sure that OFF has a ".off" extension, http://people.sc.fsu.edu/~jburkardt/data/off/off.html
+			if(!fn.endsWith(".off", Qt::CaseInsensitive))
+				fn.append(".off");
 		worker->exportOFF(primitive,fn);
 	}
 }
@@ -353,8 +360,8 @@ void MainWindow::newProject()
 {
 	QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
 			    QString(), tr("RapCAD Projects (*.rpro);;All Files (*)"));
-	if(!fn.contains(".rpro"))
-    	    fn.append(".rpro");
+	if(!fn.endsWith(".rpro", Qt::CaseInsensitive))
+		fn.append(".rpro");
 	Project p;
 	p.writeProject(fn);
 }

@@ -64,6 +64,7 @@ void Project::writeProject(QString filename)
 	xml.writeStartDocument();
 	xml.writeStartElement("project");
 	xml.writeAttribute("version","0.1");
+	QString name = filename.remove(".rpro", Qt::CaseInsensitive); //Doesn't remove path from project name... need to fix
 	xml.writeTextElement("name",name);
 	foreach(QString source,sources)
 		xml.writeTextElement("source",source);
