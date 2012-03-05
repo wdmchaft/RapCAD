@@ -1,7 +1,6 @@
 #include "project.h"
 #include <QFile>
-#include <QFileDialog>
-#include <QTextDocumentWriter>
+
 Project::Project()
 {
 }

@@ -3,7 +3,6 @@
 
 #include <QString>
 #include <QList>
-#include <QFileDialog>
 #include <QXmlStreamReader>
 
 class Project
