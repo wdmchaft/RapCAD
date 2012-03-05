@@ -53,6 +53,7 @@ private slots:
 	void clipboardDataChanged();
 	bool maybeSave(bool);
 	void newFile();
+	void newProject();
 	bool saveFile();
 	bool saveAsFile();
 	bool saveAllFiles();

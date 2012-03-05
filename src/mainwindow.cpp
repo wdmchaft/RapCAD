@@ -158,6 +158,7 @@ void MainWindow::setupActions()
 	ui->actionPreferences->setIcon(QIcon::fromTheme("document-properties"));
 
 	connect(ui->actionNew,SIGNAL(triggered()),this,SLOT(newFile()));
+	connect(ui->actionNewProject,SIGNAL(triggered()),this,SLOT(newProject()));
 	connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openFile()));
 	connect(ui->actionSave,SIGNAL(triggered()),this,SLOT(saveFile()));
 	connect(ui->actionSaveAll,SIGNAL(triggered()),this,SLOT(saveAllFiles()));
@@ -345,6 +346,11 @@ void MainWindow::newFile()
 	ui->tabWidget->setCurrentIndex(i);
 
 	setupEditor(e);
+}
+
+void MainWindow::newProject()
+{
+
 }
 
 bool MainWindow::saveFile()
