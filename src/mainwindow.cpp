@@ -26,6 +26,7 @@
 #include "preferences.h"
 #include "saveitemsdialog.h"
 #include "printconsole.h"
+#include "project.h"
 
 MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow(parent),
@@ -350,7 +351,12 @@ void MainWindow::newFile()
 
 void MainWindow::newProject()
 {
-
+	QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
+			    QString(), tr("RapCAD Projects (*.rpro);;All Files (*)"));
+	if(!fn.contains(".rpro"))
+    	    fn.append(".rpro");
+	Project p;
+	p.writeProject(fn);
 }
 
 bool MainWindow::saveFile()

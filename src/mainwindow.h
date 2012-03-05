@@ -26,6 +26,7 @@
 #include "texteditiodevice.h"
 #include "backgroundworker.h"
 #include "preferencesdialog.h"
+#include "project.h"
 
 namespace Ui
 {
