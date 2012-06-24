@@ -190,6 +190,7 @@ void MainWindow::setupActions()
 	connect(ui->actionPreferences,SIGNAL(triggered()),this,SLOT(showPreferences()));
 	connect(ui->actionExportAsciiSTL,SIGNAL(triggered()),this,SLOT(exportAsciiSTL()));
 	connect(ui->actionExportOFF,SIGNAL(triggered()),this,SLOT(exportOFF()));
+	connect(ui->actionExportAMF,SIGNAL(triggered()),this,SLOT(exportAMF()));
 	connect(ui->actionExportImage,SIGNAL(triggered()),this,SLOT(grabFrameBuffer()));
 	connect(ui->actionShowEditor,SIGNAL(triggered(bool)),ui->tabWidget,SLOT(setVisible(bool)));
 	connect(ui->actionShowConsole,SIGNAL(triggered(bool)),ui->plainTextEdit,SLOT(setVisible(bool)));
@@ -218,6 +219,17 @@ void MainWindow::exportAsciiSTL()
 			if(!fn.endsWith(".stl", Qt::CaseInsensitive))
 				fn.append(".stl");
 		worker->exportAsciiSTL(primitive,fn);
+	}
+}
+
+void MainWindow::exportAMF()
+{
+	if(primitive) {
+		QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
+					QString(), tr("AMF Files (*.amf);;All Files (*)"));
+			if(!fn.endsWith(".amf", Qt::CaseInsensitive))
+				fn.append(".amf");
+		worker->exportAMF(primitive,fn);
 	}
 }
 
@@ -378,7 +390,7 @@ bool MainWindow::saveAsFile()
 
 bool MainWindow::closeFile()
 {
-	bool result;
+	bool result=false;
 	CodeEditor* c=currentEditor();
 	if(c->document()->isModified()) {
 		QList<QString> files;

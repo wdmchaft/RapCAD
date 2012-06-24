@@ -20,6 +20,7 @@
 #define GLVIEW_H
 
 #include <QGLWidget>
+#include <CGAL/glu.h>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include "renderer.h"

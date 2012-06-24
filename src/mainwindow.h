@@ -49,6 +49,7 @@ private slots:
 	void grabFrameBuffer();
 	void exportAsciiSTL();
 	void exportOFF();
+	void exportAMF();
 	void showPreferences();
 	void disableRulers(bool);
 	void clipboardDataChanged();

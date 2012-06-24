@@ -32,32 +32,34 @@ YACCSOURCES += src/parser.y
 INCLUDEPATH += src
 
 win32 {
-	INCLUDEPATH += "..\\CGAL-3.8\\include"
-	INCLUDEPATH += "..\\CGAL-3.8\\auxiliary\\gmp\\include"
-	INCLUDEPATH += "..\\dxflib-2.2.0.0-1.src"
-	INCLUDEPATH += "..\\boost_1_46_1"
-	LIBS += -L"..\\boost_1_46_1\\bin.v2\\libs\\thread\\build\\gcc-mingw-4.5.2\\release\\threading-multi"
-	LIBS += -llibboost_thread-mgw45-mt-1_46_1
-	LIBS += -L"..\\CGAL-3.8\\lib" -lCGAL -lCGAL_Core
-	LIBS += -L"..\\CGAL-3.8\\auxiliary\\gmp\\lib" -lmpfr-4 -lgmp-10
-	LIBS += -L"..\\dxflib-2.2.0.0-1.src\\lib" -llibdxf
-	QMAKE_YACC = "..\\MinGW\\msys\\1.0\\bin\\bison"
+	CGALROOT = "..\\CGAL-4.0\\"
+	BOOSTROOT = "..\\boost_1_49_0\\"
+	DXFLIBROOT = "..\\dxflib-2.2.0.0-1.src\\"
+	MINGWROOT = "..\\MinGW\\msys\\1.0\\bin\\"
+	INCLUDEPATH += $$CGALROOT"include"
+	INCLUDEPATH += $$CGALROOT"auxiliary\\gmp\\include"
+	INCLUDEPATH += $$DXFLIBROOT
+	INCLUDEPATH += $$BOOSTROOT
+	LIBS += -L$$BOOSTROOT"bin.v2\\libs\\thread\\build\\gcc-mingw-4.6.2\\release\\threading-multi"
+	LIBS += -llibboost_thread-mgw46-mt-1_49
+	LIBS += -L$$CGALROOT"lib" -lCGAL -lCGAL_Core
+	LIBS += -L$$CGALROOT"auxiliary\\gmp\\lib" -lmpfr-4 -lgmp-10
+	LIBS += -L$$DXFLIBROOT"lib" -llibdxf
+	QMAKE_YACC = $$MINGWROOT"bison"
 	QMAKE_YACCFLAGS += "-b y"
-	QMAKE_LEX = "..\\MinGW\\msys\\1.0\\bin\\flex"
-	QMAKE_MOVE = "..\\MinGW\\msys\\1.0\\bin\\mv"
+	QMAKE_LEX = $$MINGWROOT"flex"
+	QMAKE_MOVE = $$MINGWROOT"mv"
+	QMAKE_DEL_FILE = $$MINGWROOT"rm -f"
 } else {
 	LIBS += -lCGAL -lCGAL_Core -lmpfr -lgmp -ldxflib
 	QMAKE_YACC = bison
-
-	!macx {
-		LIBS += -lboost_thread
-	}
-}
-macx {
+  macx {
 	INCLUDEPATH += /opt/local/include
 	LIBS += -L/opt/local/lib -lboost_thread-mt
-
 	QMAKE_MOC = $$[QT_INSTALL_BINS]\\moc -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED
+  } else {
+	LIBS += -lboost_thread -lGLU
+  }
 }
 
 #LIBS += -L$$PWD/librapcad -lrapcad
@@ -220,7 +222,9 @@ SOURCES += \
 	src/function/atanfunction.cpp \
 	src/function/coshfunction.cpp \
 	src/function/sinhfunction.cpp \
-	src/function/tanhfunction.cpp
+	src/function/tanhfunction.cpp \
+	src/module/centermodule.cpp \
+	src/node/centernode.cpp
 
 HEADERS  += \
 	src/mainwindow.h \
@@ -382,7 +386,9 @@ HEADERS  += \
 	src/function/atanfunction.h \
 	src/function/coshfunction.h \
 	src/function/sinhfunction.h \
-	src/function/tanhfunction.h
+	src/function/tanhfunction.h \
+	src/module/centermodule.h \
+	src/node/centernode.h
 
 FORMS += \
 	src/mainwindow.ui \

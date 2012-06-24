@@ -20,6 +20,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QString>
+#include <QXmlStreamWriter>
 #include <CGAL/IO/Polyhedron_iostream.h>
 
 CGALExport::CGALExport()
@@ -32,26 +34,29 @@ void CGALExport::exportResult(CGALPrimitive* primitive, QString filename)
 	QString suffix=file.suffix().toLower();
 	if(suffix=="off")
 		return exportOFF(primitive,file.absoluteFilePath());
+	if(suffix=="amf")
+		return exportAMF(primitive,file.absoluteFilePath());
 	if(suffix=="stl")
 		return exportAsciiSTL(primitive,file.absoluteFilePath(),true);
 }
 
 void CGALExport::exportOFF(CGALPrimitive* prim,QString filename)
 {
+	//http://people.sc.fsu.edu/~jburkardt/data/off/off.html
 	CGAL::Polyhedron3* poly=prim->getPolyhedron();
 	std::ofstream file(filename.toLocal8Bit().constData());
 	file << *poly;
 	file.close();
 }
 
+typedef CGAL::Polyhedron3::Vertex Vertex;
+typedef CGAL::Polyhedron3::Vertex_const_iterator VertexIterator;
+typedef CGAL::Polyhedron3::Facet_const_iterator FacetIterator;
+typedef CGAL::Polyhedron3::Halfedge_around_facet_const_circulator HalffacetCirculator;
+
 void CGALExport::exportAsciiSTL(CGALPrimitive* prim, QString filename, bool precise)
 {
 	CGAL::Polyhedron3* poly=prim->getPolyhedron();
-
-	typedef CGAL::Polyhedron3::Vertex Vertex;
-	typedef CGAL::Polyhedron3::Vertex_const_iterator VertexIterator;
-	typedef CGAL::Polyhedron3::Facet_const_iterator FacetIterator;
-	typedef CGAL::Polyhedron3::Halfedge_around_facet_const_circulator HalffacetCirculator;
 
 	QFile data(filename);
 	if(!data.open(QFile::WriteOnly | QFile::Truncate)) {
@@ -90,7 +95,7 @@ void CGALExport::exportAsciiSTL(CGALPrimitive* prim, QString filename, bool prec
 			p3=v3.point();
 			if(p1 == p2 || p1 == p3 || p2 == p3)
 				continue;
-
+			//Vectors?
 			double x1 = to_double(p1.x());
 			double y1 = to_double(p1.y());
 			double z1 = to_double(p1.z());
@@ -101,6 +106,7 @@ void CGALExport::exportAsciiSTL(CGALPrimitive* prim, QString filename, bool prec
 			double y3 = to_double(p3.y());
 			double z3 = to_double(p3.z());
 
+			//Is there a library to do cross product?
 			double nx = (y1-y2)*(z1-z3) - (z1-z2)*(y1-y3);
 			double ny = (z1-z2)*(x1-x3) - (x1-x2)*(z1-z3);
 			double nz = (x1-x2)*(y1-y3) - (y1-y2)*(x1-x3);
@@ -120,4 +126,96 @@ void CGALExport::exportAsciiSTL(CGALPrimitive* prim, QString filename, bool prec
 	output << "endsolid RapCAD_Model\n";
 	output.flush();
 	data.close();
+}
+
+void CGALExport::exportAMF(CGALPrimitive* prim, QString filename)
+{
+	//currently does not support multi material - sk12/04/07
+	CGAL::Polyhedron3* poly=prim->getPolyhedron();
+
+	QFile* file=new QFile(filename);
+	if (!file->open(QIODevice::WriteOnly)) {
+		return;
+	}
+
+	QXmlStreamWriter xml(file);
+	xml.setAutoFormatting(true);
+	xml.writeStartDocument();
+	xml.writeComment("Exported by RapCAD");
+	xml.writeStartElement("amf");
+	xml.writeAttribute("unit","millimeter");
+
+	xml.writeStartElement("object");
+	xml.writeAttribute("id","0");
+	xml.writeStartElement("mesh");
+	xml.writeStartElement("vertices");
+
+	QList<CGAL::Point3> vertices;
+	QList<CGAL::Triangle3> triangles;
+
+	for(FacetIterator fi = poly->facets_begin(); fi != poly->facets_end(); ++fi) {
+		HalffacetCirculator hc = fi->facet_begin();
+		HalffacetCirculator he = hc;
+		Vertex v1, v2, v3;
+		v1 = *VertexIterator((hc++)->vertex());
+		v3 = *VertexIterator((hc++)->vertex());
+		do {
+			v2 = v3;
+			v3 = *VertexIterator((hc++)->vertex());
+			CGAL::Point3 p1,p2,p3;
+			p1=v1.point();
+			p2=v2.point();
+			p3=v3.point();
+
+			if(!vertices.contains(p1))
+				vertices.append(p1);
+			if(!vertices.contains(p2))
+				vertices.append(p2);
+			if(!vertices.contains(p3))
+				vertices.append(p3);
+
+			if(p1 == p2 || p1 == p3 || p2 == p3)
+				continue;
+
+			CGAL::Triangle3 t(p1,p2,p3);
+			triangles.append(t);
+
+		} while(hc != he);
+	}
+
+	foreach(CGAL::Point3 p,vertices) {
+		xml.writeStartElement("vertex");
+		xml.writeStartElement("coordinates");
+		double x,y,z;
+		x=to_double(p.x());
+		y=to_double(p.y());
+		z=to_double(p.z());
+		xml.writeTextElement("x",QString().setNum(x));
+		xml.writeTextElement("y",QString().setNum(y));
+		xml.writeTextElement("z",QString().setNum(z));
+		xml.writeEndElement(); //coordinates
+		xml.writeEndElement(); //vertex
+	}
+
+	xml.writeEndElement(); //vertices
+
+	xml.writeStartElement("volume");
+	foreach(CGAL::Triangle3 t, triangles) {
+		xml.writeStartElement("triangle");
+		int v1,v2,v3;
+		v1=vertices.indexOf(t[0]);
+		v2=vertices.indexOf(t[1]);
+		v3=vertices.indexOf(t[2]);
+		xml.writeTextElement("v1",QString().setNum(v1));
+		xml.writeTextElement("v2",QString().setNum(v2));
+		xml.writeTextElement("v3",QString().setNum(v3));
+        xml.writeEndElement(); //triangle
+	}
+	xml.writeEndElement(); //volume
+
+	xml.writeEndElement(); //mesh
+	xml.writeEndElement(); //object
+	xml.writeEndDocument();
+	delete file;
+
 }
