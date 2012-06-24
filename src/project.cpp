@@ -1,5 +1,6 @@
 #include "project.h"
 #include <QFile>
+#include <QFileInfo>
 
 Project::Project()
 {
@@ -64,7 +65,8 @@ void Project::writeProject(QString filename)
 	xml.writeStartDocument();
 	xml.writeStartElement("project");
 	xml.writeAttribute("version","0.1");
-	QString name = filename.remove(".rpro", Qt::CaseInsensitive); //Doesn't remove path from project name... need to fix
+	QFileInfo finfo(filename);
+	QString name = finfo.baseName(); //Not sure the name of the project should be derrived from the file name.
 	xml.writeTextElement("name",name);
 	foreach(QString source,sources)
 		xml.writeTextElement("source",source);
