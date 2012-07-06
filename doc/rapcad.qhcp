@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+ <assistant>
+  <title>RapCAD Documentation</title>
+  <startPage>qthelp://org.rapcad.doc/user_guide.html</startPage>
+ </assistant>
+ <docFiles>
+  <generate>
+   <file>
+    <input>rapcad.qhp</input>
+    <output>rapcad.qch</output>
+   </file>
+  </generate>
+  <register>
+   <file>rapcad.qch</file>
+  </register>
+ </docFiles>
+</QHelpCollectionProject>

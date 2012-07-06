@@ -356,5 +356,3 @@ Translate
 -------------------------------
 translate([0,20,0]) module1();
 -------------------------------
-
-include::compiling.asciidoc[]
