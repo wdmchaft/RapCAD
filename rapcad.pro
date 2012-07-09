@@ -415,3 +415,44 @@ win32|macx {
 
 RESOURCES += \
 src/rapcad.qrc
+
+userguide.target = user_guide.html
+userguide.depends = $$PWD/doc/user_guide.asciidoc
+userguide.commands = asciidoc -o $$userguide.target $$userguide.depends
+
+compiling.target = compiling.html
+compiling.depends = $$PWD/doc/compiling.asciidoc
+compiling.commands = asciidoc -o $$compiling.target $$compiling.depends
+
+manual.target = manual.html
+manual.depends = $$PWD/doc/manual.asciidoc
+manual.commands = asciidoc -o $$manual.target $$manual.depends
+
+helpsource.target = rapcad.qhp
+helpsource..depends = $$PWD/doc/rapcad.qhp
+helpsource.commands = $$QMAKE_COPY $$helpsource.depends $$helpsource.target
+
+help.target = rapcad.qhc
+help.depends = $$helpsource.target \
+	       $$manual.target \
+	       $$compiling.target \
+	       $$userguide.target
+help.commands = qhelpgenerator $$helpsource.target -o $$help.target
+
+helpgroupsource.target = rapcad.qhcp
+helpgroupsource.depends = $$PWD/doc/rapcad.qhcp
+helpgroupsource.commands = $$QMAKE_COPY $$helpgroupsource.depends $$helpgroupsource.target
+
+helpgroup.target = rapcad-docs.qhc
+helpgroup.depends = $$help.target $$helpgroupsource.target
+helpgroup.commands = qcollectiongenerator $$helpgroupsource.target -o $$helpgroup.target
+
+QMAKE_EXTRA_TARGETS += userguide \
+		       compiling \
+		       manual \
+		       helpsource \
+		       help \
+		       helpgroupsource \
+		       helpgroup
+
+PRE_TARGETDEPS += rapcad-docs.qhc
