@@ -428,31 +428,27 @@ manual.target = manual.html
 manual.depends = $$PWD/doc/manual.asciidoc
 manual.commands = asciidoc -o $$manual.target $$manual.depends
 
-helpsource.target = rapcad.qhp
-helpsource..depends = $$PWD/doc/rapcad.qhp
-helpsource.commands = $$QMAKE_COPY $$helpsource.depends $$helpsource.target
+docsource.target = rapcad.qhp
+docsource.depends = $$PWD/doc/rapcad.qhp
+docsource.commands = $$QMAKE_COPY $$docsource.depends $$docsource.target
 
-help.target = rapcad.qhc
-help.depends = $$helpsource.target \
-	       $$manual.target \
-	       $$compiling.target \
-	       $$userguide.target
-help.commands = qhelpgenerator $$helpsource.target -o $$help.target
+docgroupsource.target = rapcad.qhcp
+docgroupsource.depends = $$PWD/doc/rapcad.qhcp
+docgroupsource.commands = $$QMAKE_COPY $$docgroupsource.depends $$docgroupsource.target
 
-helpgroupsource.target = rapcad.qhcp
-helpgroupsource.depends = $$PWD/doc/rapcad.qhcp
-helpgroupsource.commands = $$QMAKE_COPY $$helpgroupsource.depends $$helpgroupsource.target
+doc.target = rapcad.qhc
+doc.depends =	docsource \
+		docgroupsource \
+		manual \
+		compiling \
+		userguide
+doc.commands = qcollectiongenerator $$docgroupsource.target -o $$doc.target
 
-helpgroup.target = rapcad-docs.qhc
-helpgroup.depends = $$help.target $$helpgroupsource.target
-helpgroup.commands = qcollectiongenerator $$helpgroupsource.target -o $$helpgroup.target
+QMAKE_EXTRA_TARGETS +=	userguide \
+			compiling \
+			manual \
+			docsource \
+			docgroupsource \
+			doc
 
-QMAKE_EXTRA_TARGETS += userguide \
-		       compiling \
-		       manual \
-		       helpsource \
-		       help \
-		       helpgroupsource \
-		       helpgroup
-
-PRE_TARGETDEPS += rapcad-docs.qhc
+PRE_TARGETDEPS += rapcad.qhc
