@@ -49,6 +49,7 @@ MainWindow::~MainWindow()
 	delete output;
 	delete worker;
 	delete preferencesDialog;
+	delete assistant;
 	delete ui;
 }
 
@@ -196,6 +197,8 @@ void MainWindow::setupActions()
 	connect(ui->actionDefaultView,SIGNAL(triggered()),this,SLOT(getDefaultViewport()));
 
 	connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(tabChanged(int)));
+
+	connect(ui->actionContents,SIGNAL(triggered()),this,SLOT(showHelpContents()));
 }
 
 void MainWindow::grabFrameBuffer()
@@ -509,6 +512,14 @@ void MainWindow::print()
 {
 	PrintConsole p;
 	p.exec();
+}
+
+void MainWindow::showHelpContents()
+{
+	if(!assistant)
+		assistant = new Assistant();
+
+	assistant->showDocumentation("index.html");
 }
 
 void MainWindow::tabChanged(int i)

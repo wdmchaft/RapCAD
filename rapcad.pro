@@ -224,7 +224,8 @@ SOURCES += \
 	src/function/sinhfunction.cpp \
 	src/function/tanhfunction.cpp \
 	src/module/centermodule.cpp \
-	src/node/centernode.cpp
+	src/node/centernode.cpp \
+	src/assistant.cpp
 
 HEADERS  += \
 	src/mainwindow.h \
@@ -388,7 +389,8 @@ HEADERS  += \
 	src/function/sinhfunction.h \
 	src/function/tanhfunction.h \
 	src/module/centermodule.h \
-	src/node/centernode.h
+	src/node/centernode.h \
+	src/assistant.h
 
 FORMS += \
 	src/mainwindow.ui \

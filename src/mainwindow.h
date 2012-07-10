@@ -26,6 +26,7 @@
 #include "texteditiodevice.h"
 #include "backgroundworker.h"
 #include "preferencesdialog.h"
+#include "assistant.h"
 
 namespace Ui
 {
@@ -69,6 +70,7 @@ private slots:
 	void paste();
 	void tabChanged(int);
 	void print();
+	void showHelpContents();
 private:
 	void loadPreferences();
 	void savePreferences();
@@ -87,6 +89,7 @@ private:
 	TextEditIODevice* console;
 	BackgroundWorker* worker;
 	PreferencesDialog* preferencesDialog;
+	Assistant* assistant;
 	CGALPrimitive* primitive;
 };
 
