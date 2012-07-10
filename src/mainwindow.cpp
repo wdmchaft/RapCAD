@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	setupTreeview();
 	setupConsole();
 	preferencesDialog=NULL;
+	assistant=NULL;
 	loadPreferences();
 }
 
