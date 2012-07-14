@@ -16,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QLibraryInfo>
+#include <QCoreApplication>
 #include <QDir>
 #include <QMessageBox>
 #include "assistant.h"
@@ -49,7 +50,7 @@ bool Assistant::startAssistant()
 
 		QStringList args;
 		args << "-collectionFile"
-			 << "rapcad.qhc"
+			 << QCoreApplication::applicationDirPath() + QDir::separator() + "rapcad.qhc"
 			 << "-enableRemoteControl";
 
 		proc->start(app, args);

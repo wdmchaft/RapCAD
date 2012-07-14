@@ -401,15 +401,6 @@ FORMS += \
 OTHER_FILES += \
 	COPYING
 
-unix {
-	isEmpty(PREFIX) {
-		PREFIX = /usr
-	}
-	BINDIR = $$PREFIX/bin
-	INSTALLS += target
-	target.path =$$BINDIR
-}
-
 win32|macx {
 	RESOURCES += \
 	src/icons.qrc
@@ -454,3 +445,14 @@ QMAKE_EXTRA_TARGETS +=	userguide \
 			doc
 
 PRE_TARGETDEPS += rapcad.qhc
+
+unix {
+	isEmpty(PREFIX) {
+		PREFIX = /usr
+	}
+	BINDIR = $$PREFIX/bin
+	docs.path = $$BINDIR
+	docs.files = rapcad.qch
+	target.path = $$BINDIR
+	INSTALLS += target docs
+}
