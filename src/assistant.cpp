@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include "assistant.h"
+#include "stringify.h"
 
 Assistant::Assistant()
 {
@@ -34,6 +35,7 @@ Assistant::~Assistant()
 	}
 	delete proc;
 }
+
 
 bool Assistant::startAssistant()
 {
@@ -50,7 +52,11 @@ bool Assistant::startAssistant()
 
 		QStringList args;
 		args << "-collectionFile"
+#if defined(Q_OS_UNIX)
+			 << QSTRINGIFY(DOCDIR) + "/rapcad.qhc"
+#else
 			 << QCoreApplication::applicationDirPath() + QDir::separator() + "rapcad.qhc"
+#endif
 			 << "-enableRemoteControl";
 
 		proc->start(app, args);

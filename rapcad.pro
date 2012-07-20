@@ -390,7 +390,8 @@ HEADERS  += \
 	src/function/tanhfunction.h \
 	src/module/centermodule.h \
 	src/node/centernode.h \
-	src/assistant.h
+	src/assistant.h \
+	src/stringify.h
 
 FORMS += \
 	src/mainwindow.ui \
@@ -451,8 +452,11 @@ unix {
 		PREFIX = /usr
 	}
 	BINDIR = $$PREFIX/bin
-	docs.path = $$BINDIR
+	DOCDIR = $$PREFIX/share/doc/rapcad
+	docs.path = $$DOCDIR
 	docs.files = rapcad.qch
 	target.path = $$BINDIR
 	INSTALLS += target docs
+
+	DEFINES += DOCDIR=$$DOCDIR
 }
